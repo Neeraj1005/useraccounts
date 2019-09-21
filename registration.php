@@ -10,25 +10,7 @@ require_once('config.php');
 <body>
 	<div>
 		<?php
-		if(isset($_POST['create'])){
-			$firstname 		=$_POST['firstname'];
-			$lastname 		=$_POST['lastname'];
-			$email 			=$_POST['email'];
-			$phone 			=$_POST['phone'];
-			$password 		=$_POST['password'];
-
-			//Begin sql feed
-			$sql = "INSERT INTO users (firstname, lastname, email, phone, password) VALUES(?,?,?,?,?)";
-			$stmtinsert = $db->prepare($sql);
-			$result = $stmtinsert->execute([$firstname, $lastname, $email, $phone, $password]);
-			if($result){
-				echo "Succefully feed";
-			}else{
-				echo "There is an error";
-			}
-			//End sql feed
-			//echo $firstname ."" . $lastname ."" . $email ."" . $password;
-		}			
+			//content move to process.php		
 		?>
 	</div>
 	<div>
@@ -69,26 +51,47 @@ require_once('config.php');
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script type="text/javascript">
 	$(function(){
-		$('#register').click(function(e)){
+		$('#register').click(function(e){
 			var valid = this.form.checkValidity();
+
+
 			if(valid){
-				e.preventDefault();
-				alert('true');
-			}else{
-				alert('false');
-			}
+
 			var firstname =$('#firstname').val();
 			var lastname =$('#lastname').val();
 			var email =$('#email').val();
 			var phone =$('#phone').val();
 			var password =$('#password').val();
-		}
+
+				e.preventDefault();
+
+				$.ajax({
+					type: 'POST',
+					url: 'process.php',
+					data: {firstname: firstname, lastname: lastname, email: email,phone: phone, password: password},
+					success: function(data){
+						Swal.fire({
+						'title': 'Congratulation',
+						'text':data,
+						'type': 'success'
+								})
+					},
+					error: function(data){
+						Swal.fire({
+						'title': 'Error',
+						'text':'error in form',
+						'type': 'error'
+								})
+					}
+				});
+
+			}else{
+				
+			}
+			
+		});
 		//alert('hello');
-		swal.fire({
-			'title': 'Congratulation',
-			'text':'Form Succefully Feed',
-			'type': 'success'
-		})
+		
 	});
 </script>
 </body>
